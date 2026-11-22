@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#111827">
+<link rel="manifest" href="manifest.json">
+<title>VendaBot ML</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f4f6;color:#111827}
+header{background:#111827;color:#fff;padding:18px 16px 20px;border-radius:0 0 22px 22px}
+h1{margin:0;font-size:24px}header p{margin:5px 0 0;color:#cbd5e1;font-size:13px}
+main{padding:14px;max-width:650px;margin:auto}
+.card{background:#fff;border-radius:16px;padding:15px;margin-bottom:12px;box-shadow:0 2px 10px #00000010}
+.title{font-weight:800;font-size:17px;margin-bottom:6px}.muted{color:#64748b;font-size:13px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:#fff;border-radius:14px;padding:13px}.stat b{font-size:19px;display:block}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:13px;margin-top:10px;font-weight:800;font-size:15px;background:#111827;color:#fff}
+.btn2{background:#e5e7eb;color:#111827}.price{font-size:19px;font-weight:800}.commission{font-weight:800}
+input{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:11px;font-size:14px;margin-top:8px}
+.product{border:1px solid #e5e7eb;border-radius:14px;padding:13px;margin-top:10px}.tag{display:inline-block;background:#dcfce7;color:#166534;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700;margin-bottom:7px}
+.ad{background:#f8fafc;border-radius:12px;padding:12px;margin-top:10px;white-space:pre-wrap;font-size:14px;line-height:1.45}
+small{color:#64748b}
+</style>
+</head>
+<body>
+<header><h1>🤖 VendaBot ML</h1><p>Seu painel de oportunidades de afiliada</p></header>
+<main>
+<div class="stats">
+ <div class="stat"><small>Produtos analisados</small><b id="count">6</b></div>
+ <div class="stat"><small>Maior comissão</small><b id="max">R$ 30,18</b></div>
+</div>
+
+<div class="card">
+ <div class="title">🔥 Produtos em destaque</div>
+ <div class="muted">Os produtos abaixo são exemplos até a aprovação da sua aplicação do Mercado Livre.</div>
+ <div id="products"></div>
+</div>
+
+<div class="card">
+ <div class="title">🔗 Seu link de afiliada</div>
+ <div class="muted">Cole aqui o link de afiliada que você copiar no Mercado Livre.</div>
+ <input id="aff" placeholder="Cole seu link de afiliada aqui">
+ <button class="btn" onclick="generate()">📢 GERAR ANÚNCIO</button>
+ <div id="ad" class="ad" style="display:none"></div>
+ <button id="copyAd" class="btn btn2" style="display:none" onclick="copyAd()">📋 COPIAR ANÚNCIO</button>
+</div>
+
+<div class="card">
+ <div class="title">📱 Como vamos usar</div>
+ <div class="muted">1. Escolha o produto → 2. Abra no Mercado Livre → 3. Gere seu link de afiliada → 4. Volte aqui → 5. Gere o anúncio.</div>
+</div>
+</main>
+<script>
+const products=[
+["Parafusadeira/Furadeira sem fio 12V + maleta e acessórios","R$ 109,90","R$ 13,19","+100 mil vendidos","4,7"],
+["Tinta Acrílica para Piso 18 kg Cintilar","R$ 167,64","R$ 30,18","+1 mil vendidos","4,7"],
+["Jogo de Chaves Allen 30 peças","R$ 38,79","R$ 4,65","+5 mil vendidos","4,8"],
+["Kit Jogo de Ferramentas Aço Carbono Titanium 11 peças","R$ 38,89","R$ 4,67","+10 mil vendidos","4,5"],
+["Jogo de chave boca/estrela combinada 12 peças","R$ 58,00","R$ 6,96","+10 mil vendidos","4,8"],
+["Furadeira/Parafusadeira de Impacto 20V","R$ 77,36","R$ 9,28","+50 vendidos","4,5"]
+];
+let selected=0;
+function render(){
+ const el=document.getElementById("products");
+ el.innerHTML=products.map((p,i)=>`<div class="product"><span class="tag">#${i+1} • ${p[4]} ⭐</span><div class="title">${p[0]}</div><div class="price">${p[1]}</div><div class="commission">💰 Comissão estimada: ${p[2]}</div><div class="muted">🛒 ${p[3]}</div><button class="btn" onclick="openML(${i})">🛒 ABRIR PRODUTO NO MERCADO LIVRE</button></div>`).join("");
+}
+function openML(i){
+ selected=i;
+ alert("Na versão conectada, este botão abrirá o endereço exato do produto no Mercado Livre. Por enquanto os produtos são apenas dados de teste.");
+}
+function generate(){
+ const link=document.getElementById("aff").value.trim();
+ if(!link){alert("Cole primeiro o seu link de afiliada.");return}
+ const p=products[selected];
+ const text=`🔥 OFERTA EM DESTAQUE\\n\\n${p[0]}\\n💰 ${p[1]}\\n⭐ ${p[4]} de avaliação\\n🛒 ${p[3]}\\n\\n👉 Confira aqui:\\n${link}`;
+ const ad=document.getElementById("ad"); ad.textContent=text; ad.style.display="block";
+ document.getElementById("copyAd").style.display="block";
+}
+async function copyAd(){
+ await navigator.clipboard.writeText(document.getElementById("ad").textContent);
+ alert("Anúncio copiado!");
+}
+render();
+</script>
+</body></html>
